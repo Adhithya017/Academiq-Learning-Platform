@@ -1,0 +1,181 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+  
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    font-family: 'Inter', sans-serif;
+    background: #0f0a1a;
+    color: #e2d9f3;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #1a1030;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #5b21b6;
+    border-radius: 3px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: #7c3aed;
+  }
+
+  select {
+    color: white;
+    background-color: #0f172a;
+  }
+
+  select option {
+    background-color: #0f172a;
+    color: white;
+  }
+
+  select:focus {
+    outline: none;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/5 backdrop-blur-md border border-white/10 rounded-2xl;
+  }
+  
+  .glass-card {
+    @apply bg-gradient-to-br from-purple-900/20 to-purple-950/10 backdrop-blur-md border border-purple-500/20 rounded-2xl shadow-glass;
+    transition: all 0.3s ease;
+  }
+  
+  .glass-card:hover {
+    @apply shadow-glass-hover border-purple-400/30;
+    transform: translateY(-2px);
+  }
+
+  .glow-btn {
+    @apply bg-gradient-to-r from-purple-600 to-violet-600 text-white font-semibold py-3 px-6 rounded-xl shadow-glow;
+    transition: all 0.3s ease;
+  }
+  
+  .glow-btn:hover {
+    @apply shadow-glow from-purple-500 to-violet-500;
+    transform: translateY(-1px);
+  }
+
+  .metric-card {
+    @apply glass-card p-5 flex flex-col gap-2;
+  }
+
+  .sidebar-link {
+    @apply flex items-center gap-3 px-4 py-3 rounded-xl text-purple-300 font-medium transition-all duration-200;
+  }
+  
+  .sidebar-link:hover {
+    @apply bg-purple-500/20 text-white;
+  }
+  
+  .sidebar-link.active {
+    @apply bg-gradient-to-r from-purple-600/40 to-violet-600/20 text-white border border-purple-500/30;
+  }
+
+  .input-field {
+    @apply w-full bg-white/5 border border-purple-500/30 text-white placeholder-purple-400/60 rounded-xl px-4 py-3 outline-none transition-all duration-200;
+  }
+  
+  .input-field:focus {
+    @apply border-purple-400 bg-purple-500/10;
+    box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.15);
+  }
+
+  .badge {
+    @apply inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium;
+  }
+
+  .badge-success {
+    @apply badge bg-emerald-500/20 text-emerald-300 border border-emerald-500/30;
+  }
+
+  .badge-warning {
+    @apply badge bg-amber-500/20 text-amber-300 border border-amber-500/30;
+  }
+
+  .badge-danger {
+    @apply badge bg-red-500/20 text-red-300 border border-red-500/30;
+  }
+
+  .badge-info {
+    @apply badge bg-cyan-500/20 text-cyan-300 border border-cyan-500/30;
+  }
+
+  .page-title {
+    @apply text-3xl font-bold bg-gradient-to-r from-purple-300 to-violet-200 bg-clip-text text-transparent;
+  }
+
+  .section-title {
+    @apply text-lg font-semibold text-purple-200;
+  }
+
+  .search-dropdown {
+    @apply absolute top-full left-0 right-0 mt-2 rounded-xl bg-slate-900 border border-purple-500/30 shadow-2xl shadow-purple-900/20 max-h-96 overflow-y-auto z-50;
+  }
+
+  .search-result-item {
+    @apply w-full flex items-center gap-3 px-4 py-3 hover:bg-purple-600 text-white transition-colors border-b border-purple-500/10 last:border-0;
+  }
+
+  .search-group-label {
+    @apply px-4 py-2 text-xs font-semibold text-purple-400 uppercase tracking-wider bg-slate-800/50 flex items-center gap-2;
+  }
+}
+
+@layer utilities {
+  .text-gradient {
+    @apply bg-gradient-to-r from-purple-300 to-pink-300 bg-clip-text text-transparent;
+  }
+  
+  .text-gradient-cyan {
+    @apply bg-gradient-to-r from-cyan-300 to-purple-300 bg-clip-text text-transparent;
+  }
+
+  .border-gradient {
+    border-image: linear-gradient(135deg, #7c3aed, #ec4899) 1;
+  }
+
+  .animate-fade-in {
+    animation: fade-in 0.4s ease-out forwards;
+  }
+  
+  @keyframes fade-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0px); }
+    50% { transform: translateY(-8px); }
+  }
+  
+  .dot-grid {
+    background-image: radial-gradient(circle, rgba(139, 92, 246, 0.15) 1px, transparent 1px);
+    background-size: 32px 32px;
+  }
+}
