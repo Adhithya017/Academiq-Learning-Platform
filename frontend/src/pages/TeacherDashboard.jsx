@@ -3,12 +3,14 @@ import Layout from '../components/Layout';
 import Modal from '../components/Modal';
 import Toast, { useToast } from '../components/Toast';
 import { BarChartBox, LineChartBox, DonutChart } from '../components/ChartBox';
-import { teacherAPI, attendanceAPI, assignmentsAPI, analyticsAPI } from '../services/api';
+import { teacherAPI, attendanceAPI, assignmentsAPI, analyticsAPI, coursesAPI } from '../services/api';
+import { useAuth } from '../context/AuthContext';
 import { Users, BookOpen, TrendingUp, AlertTriangle, Award, CalendarDays, ClipboardList, Star, Plus, Save, Sparkles } from 'lucide-react';
 
 const TABS = ['overview', 'attendance', 'assignments', 'marks'];
 
 export default function TeacherDashboard() {
+  const { user } = useAuth();
   const [activeTab, setActiveTab] = useState('overview');
   const [metrics, setMetrics] = useState(null);
   const [atRisk, setAtRisk] = useState([]);
@@ -38,20 +40,28 @@ export default function TeacherDashboard() {
   const { toasts, toast, removeToast } = useToast();
 
   useEffect(() => {
+    const isAdmin = user?.role === 'admin';
+    // Admins don't have a teacher profile, so fetch all courses instead
+    const coursesPromise = isAdmin ? coursesAPI.getAll() : teacherAPI.getMyCourses();
     Promise.allSettled([
       teacherAPI.getDashboard(),
       teacherAPI.getAtRiskStudents(),
       teacherAPI.getClassPerformance(),
       analyticsAPI.getRiskDistribution(),
-      teacherAPI.getMyCourses(),
+      coursesPromise,
     ]).then(([m, ar, perf, rd, mc]) => {
       if (m.status === 'fulfilled') setMetrics(m.value);
       if (ar.status === 'fulfilled') setAtRisk(ar.value.slice(0, 8));
       if (perf.status === 'fulfilled' && perf.value.length > 0) setPerformance(perf.value);
       if (rd.status === 'fulfilled') setRiskDist(rd.value);
-      if (mc.status === 'fulfilled') setMyCourses(mc.value);
+      if (mc.status === 'fulfilled') {
+        // Normalize: coursesAPI.getAll() returns objects with teacher_name etc.,
+        // teacherAPI.getMyCourses() returns objects with title, code, id, etc.
+        // Both have id and title, which is all the dropdowns need.
+        setMyCourses(mc.value);
+      }
     }).finally(() => setLoading(false));
-  }, []);
+  }, [user]);
 
   // Load attendance
   const loadAttendance = async () => {

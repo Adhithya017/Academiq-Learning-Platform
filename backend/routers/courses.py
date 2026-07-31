@@ -62,12 +62,15 @@ def get_my_courses(
     teacher = db.query(models.Teacher).filter(
         models.Teacher.user_id == current_user.id).first()
     if not teacher:
-        raise HTTPException(status_code=404, detail="Teacher profile not found")
-
-    courses = db.query(models.Course).filter(
-        models.Course.teacher_id == teacher.id,
-        models.Course.is_active == True
-    ).all()
+        if current_user.role == "admin":
+            courses = db.query(models.Course).filter(models.Course.is_active == True).all()
+        else:
+            raise HTTPException(status_code=404, detail="Teacher profile not found")
+    else:
+        courses = db.query(models.Course).filter(
+            models.Course.teacher_id == teacher.id,
+            models.Course.is_active == True
+        ).all()
 
     result = []
     for c in courses:

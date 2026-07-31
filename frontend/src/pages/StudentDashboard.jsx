@@ -64,7 +64,7 @@ export default function StudentDashboard() {
     load();
   }, [studentId]);
 
-  const data = metrics || { attendance: 85.5, performance_score: 78.2, courses_enrolled: 4, dropout_risk: 12.4, prediction_accuracy: 94.2, gpa: 3.4, assignments_submitted: 22, assignments_total: 28 };
+  const data = metrics || { attendance_rate: 85.5, performance_score: 78.2, courses_enrolled: 4, dropout_risk: 12.4, prediction_accuracy: 94.2, gpa: 3.4, assignments_submitted: 22, assignments_total: 28 };
   const subjectData = courses.map((c, i) => ({ subject: c.code || `C${i + 1}`, score: c.avg_score || 70 }));
   const greeting = ['Morning', 'Afternoon', 'Evening'][Math.floor(new Date().getHours() / 8)] || 'Hello';
 
@@ -106,7 +106,7 @@ export default function StudentDashboard() {
         {activeTab === 'overview' && (
           <div className="space-y-5">
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-              <MetricCard title="Attendance Rate" value={loading ? '—' : `${data.attendance?.toFixed(1)}%`} icon={Activity} color="purple" trend={3.2} subtitle="Last 8 weeks" />
+              <MetricCard title="Attendance Rate" value={loading ? '—' : `${data.attendance_rate?.toFixed(1)}%`} icon={Activity} color="purple" trend={3.2} subtitle="Last 8 weeks" />
               <MetricCard title="Performance Score" value={loading ? '—' : `${data.performance_score?.toFixed(1)}%`} icon={TrendingUp} color="green" trend={5.1} subtitle="AI predicted" />
               <MetricCard title="Courses Enrolled" value={loading ? '—' : data.courses_enrolled} icon={BookOpen} color="cyan" subtitle="Active semester" />
               <MetricCard title="Dropout Risk" value={loading ? '—' : `${data.dropout_risk?.toFixed(1)}%`} icon={AlertTriangle} color={data.dropout_risk > 60 ? 'red' : 'orange'} subtitle={data.dropout_risk > 60 ? '⚠ High risk!' : 'Low risk'} />

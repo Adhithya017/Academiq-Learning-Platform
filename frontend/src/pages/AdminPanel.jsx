@@ -40,11 +40,20 @@ export default function AdminPanel() {
 
   useEffect(() => {
     adminAPI.getStats().then(setStats).catch(() => {}).finally(() => setLoading(false));
+    adminAPI.getCourses().then(setCourses).catch(() => {});
+    adminAPI.getTeachersList().then(setTeachers).catch(() => {});
+    adminAPI.getUsers().then(u => {
+      setUsers(u);
+      setAllStudents(u.filter(x => x.role === 'student'));
+    }).catch(() => {});
   }, []);
 
   useEffect(() => {
     if (activeTab === 'users') {
-      adminAPI.getUsers().then(setUsers).catch(() => {});
+      adminAPI.getUsers().then(u => {
+        setUsers(u);
+        setAllStudents(u.filter(x => x.role === 'student'));
+      }).catch(() => {});
     }
     if (activeTab === 'courses') {
       adminAPI.getCourses().then(setCourses).catch(() => {});
@@ -174,7 +183,7 @@ export default function AdminPanel() {
 
   return (
     <Layout title="Admin Panel">
-      <div className="flex flex-col gap-6 w-full mx-auto max-w-7xl relative z-0">
+      <div className="flex flex-col gap-6 w-full mx-auto max-w-7xl relative">
         <Toast toasts={toasts} removeToast={removeToast} />
 
         {/* Header */}
@@ -312,7 +321,7 @@ export default function AdminPanel() {
                 <h3 className="section-title">Enrollments</h3>
                 <p className="text-purple-400/80 text-sm mt-1">{enrollments.length} enrollments found</p>
               </div>
-              <button onClick={() => setEnrollModal(true)}
+              <button id="enroll-student-btn" onClick={() => setEnrollModal(true)}
                 className="flex-shrink-0 flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-purple-600 text-white text-sm hover:bg-purple-500 transition-all font-medium shadow-glow">
                 <Plus className="w-4 h-4" /> Enroll Student
               </button>
@@ -377,26 +386,15 @@ export default function AdminPanel() {
         />
 
         {/* Enroll Modal */}
-        <Modal isOpen={enrollModal} onClose={() => setEnrollModal(false)} title="Enroll Student">
-          <div>
-            <FormField label="Student">
-              <select value={enrollForm.student_id} onChange={e => setEnrollForm(f => ({ ...f, student_id: e.target.value }))} className={selectInp}>
-                <option value="">Select student...</option>
-                {allStudents.map(s => <option key={s.id} value={s.profile_id} disabled={!s.profile_id}>{s.full_name} ({s.roll_number || s.email}) {!s.profile_id && '(No Profile)'}</option>)}
-              </select>
-            </FormField>
-            <FormField label="Course">
-              <select value={enrollForm.course_id} onChange={e => setEnrollForm(f => ({ ...f, course_id: e.target.value }))} className={selectInp}>
-                <option value="">Select course...</option>
-                {courses.map(c => <option key={c.id} value={c.id}>{c.title} ({c.code})</option>)}
-              </select>
-            </FormField>
-            <div className="flex gap-3 mt-4">
-              <button onClick={enroll} className="flex-1 py-2 rounded-lg bg-purple-600 text-white text-sm font-medium hover:bg-purple-500">Enroll</button>
-              <button onClick={() => setEnrollModal(false)} className="flex-1 py-2 rounded-lg bg-purple-500/10 text-purple-300 text-sm hover:bg-purple-500/20">Cancel</button>
-            </div>
-          </div>
-        </Modal>
+        <EnrollModal
+          open={enrollModal}
+          allStudents={allStudents}
+          courses={courses}
+          enrollForm={enrollForm}
+          setEnrollForm={setEnrollForm}
+          onClose={() => setEnrollModal(false)}
+          onEnroll={enroll}
+        />
       </div>
     </Layout>
   );
@@ -518,3 +516,48 @@ function CourseModal({ open, data, teachers, onClose, onSave }) {
     </Modal>
   );
 }
+
+function EnrollModal({ open, allStudents = [], courses = [], enrollForm = { student_id: '', course_id: '' }, setEnrollForm, onClose, onEnroll }) {
+  const selectInp = "w-full bg-slate-900 text-white font-medium placeholder:text-purple-300 border border-purple-500/40 rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-500/50";
+  return (
+    <Modal isOpen={open} onClose={onClose} title="Enroll Student">
+      <div>
+        <div className="mb-3">
+          <label className="block text-xs text-purple-400 mb-1">Student</label>
+          <select
+            value={enrollForm?.student_id || ''}
+            onChange={e => setEnrollForm && setEnrollForm(f => ({ ...f, student_id: e.target.value }))}
+            className={selectInp}
+          >
+            <option value="">Select student...</option>
+            {(allStudents || []).map(s => (
+              <option key={s.id || s.email} value={s.profile_id || s.id} disabled={!s.profile_id && !s.id}>
+                {s.full_name || s.email} ({s.roll_number || s.email}) {!s.profile_id && !s.id && '(No Profile)'}
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="mb-3">
+          <label className="block text-xs text-purple-400 mb-1">Course</label>
+          <select
+            value={enrollForm?.course_id || ''}
+            onChange={e => setEnrollForm && setEnrollForm(f => ({ ...f, course_id: e.target.value }))}
+            className={selectInp}
+          >
+            <option value="">Select course...</option>
+            {(courses || []).map(c => (
+              <option key={c.id || c.code} value={c.id}>
+                {c.title} ({c.code})
+              </option>
+            ))}
+          </select>
+        </div>
+        <div className="flex gap-3 mt-4">
+          <button onClick={onEnroll} className="flex-1 py-2 rounded-lg bg-purple-600 text-white text-sm font-medium hover:bg-purple-500">Enroll</button>
+          <button onClick={onClose} className="flex-1 py-2 rounded-lg bg-purple-500/10 text-purple-300 text-sm hover:bg-purple-500/20">Cancel</button>
+        </div>
+      </div>
+    </Modal>
+  );
+}
+
