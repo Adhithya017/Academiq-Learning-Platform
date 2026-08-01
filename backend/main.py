@@ -45,7 +45,7 @@ app.add_middleware(
 )
 
 @app.middleware("http")
-def add_cors_headers_fallback(request, call_next):
+async def add_cors_headers_fallback(request: Request, call_next):
     origin = request.headers.get("origin")
     if request.method == "OPTIONS":
         from fastapi.responses import Response
@@ -57,7 +57,7 @@ def add_cors_headers_fallback(request, call_next):
             response.headers["Access-Control-Allow-Headers"] = "*"
         return response
 
-    response = call_next(request)
+    response = await call_next(request)
     if origin and "Access-Control-Allow-Origin" not in response.headers:
         response.headers["Access-Control-Allow-Origin"] = origin
         response.headers["Access-Control-Allow-Credentials"] = "true"
