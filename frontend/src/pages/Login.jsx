@@ -149,25 +149,29 @@ export default function Login() {
           </div>
 
           <div className="glass-card p-8">
-            <div className="mb-6">
+            <div className="mb-5">
               <h3 className="text-2xl font-bold text-white mb-1">Welcome back</h3>
               <p className="text-purple-400/70 text-sm">Sign in to access your AI-powered dashboard</p>
             </div>
 
             {/* Quick login buttons */}
-            <div className="grid grid-cols-3 gap-2 mb-5">
-              <button onClick={() => handleQuickLogin('student')}
-                className="py-2 px-2 rounded-xl bg-purple-500/10 border border-purple-500/25 text-purple-300 text-xs font-medium hover:bg-purple-500/20 transition-all text-center">
-                🎓 Student
-              </button>
-              <button onClick={() => handleQuickLogin('teacher')}
-                className="py-2 px-2 rounded-xl bg-pink-500/10 border border-pink-500/25 text-pink-300 text-xs font-medium hover:bg-pink-500/20 transition-all text-center">
-                👩‍🏫 Teacher
-              </button>
-              <button onClick={() => handleQuickLogin('admin')}
-                className="py-2 px-2 rounded-xl bg-cyan-500/10 border border-cyan-500/25 text-cyan-300 text-xs font-medium hover:bg-cyan-500/20 transition-all text-center">
-                🛡️ Admin
-              </button>
+            <div className="mb-4">
+              <p className="text-xs font-semibold text-purple-300 mb-2">⚡ Click a role to auto-fill credentials:</p>
+              <div className="grid grid-cols-2 gap-2 mb-2">
+                <button type="button" onClick={() => handleQuickLogin('student')}
+                  className="py-2.5 px-3 rounded-xl bg-purple-500/15 border border-purple-500/30 text-purple-200 text-xs font-semibold hover:bg-purple-500/30 transition-all text-center flex flex-col items-center gap-0.5">
+                  <span>🎓 Student Demo</span>
+                  <span className="text-[10px] text-purple-300/70">cs2021001@academiq.com</span>
+                </button>
+                <button type="button" onClick={() => handleQuickLogin('teacher')}
+                  className="py-2.5 px-3 rounded-xl bg-pink-500/15 border border-pink-500/30 text-pink-200 text-xs font-semibold hover:bg-pink-500/30 transition-all text-center flex flex-col items-center gap-0.5">
+                  <span>👩‍🏫 Teacher Demo</span>
+                  <span className="text-[10px] text-pink-300/70">teacher1@academiq.com</span>
+                </button>
+              </div>
+              <p className="text-[11px] text-purple-300/60 text-center">
+                Demo passwords: <span className="text-purple-200 font-mono">Student@123</span> / <span className="text-pink-200 font-mono">Teacher@123</span>
+              </p>
             </div>
 
             <div className="relative mb-5">
