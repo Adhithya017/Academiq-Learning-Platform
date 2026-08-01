@@ -23,9 +23,11 @@ SQLALCHEMY_DATABASE_URL = (
     f"mysql+pymysql://{DB_USER}:{encoded_password}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 )
 
+import certifi
+
 connect_args = {}
 if DB_HOST != "localhost" and DB_HOST != "127.0.0.1":
-    connect_args = {"ssl": {}}
+    connect_args = {"ssl": {"ca": certifi.where()}}
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,
