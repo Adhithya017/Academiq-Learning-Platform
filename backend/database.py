@@ -7,7 +7,11 @@ from sqlalchemy.orm import sessionmaker, declarative_base
 load_dotenv()
 
 DB_HOST = os.getenv("DB_HOST", "localhost")
-DB_PORT = os.getenv("DB_PORT", "3306")
+raw_port = os.getenv("DB_PORT", "").strip()
+if not raw_port or raw_port == "3306":
+    DB_PORT = "4000" if "tidbcloud.com" in DB_HOST else "3306"
+else:
+    DB_PORT = raw_port
 DB_NAME = os.getenv("DB_NAME", "academiq")
 DB_USER = os.getenv("DB_USER", "root")
 DB_PASSWORD = os.getenv("DB_PASSWORD", "")

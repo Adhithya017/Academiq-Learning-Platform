@@ -6,8 +6,10 @@ import ml_models
 
 from routers import auth, students, teachers, courses, attendance, assignments, analytics, notifications, admin
 
-# ── Create all DB tables ──────────────────────────────────────────────
-models.Base.metadata.create_all(bind=database.engine)
+try:
+    models.Base.metadata.create_all(bind=database.engine)
+except Exception as e:
+    print("WARNING: Table creation at startup skipped or deferred:", e)
 
 # ── FastAPI App ───────────────────────────────────────────────────────
 app = FastAPI(
