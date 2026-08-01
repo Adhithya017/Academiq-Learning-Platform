@@ -21,7 +21,7 @@ SQLALCHEMY_DATABASE_URL = (
 
 connect_args = {}
 if DB_HOST != "localhost" and DB_HOST != "127.0.0.1":
-    connect_args = {"ssl": {"ssl_mode": "VERIFY_IDENTITY"}}
+    connect_args = {"ssl": {}}
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,

@@ -73,6 +73,24 @@ app.include_router(notifications.router)
 app.include_router(admin.router)
 
 
+from fastapi import Request
+from fastapi.responses import JSONResponse
+
+@app.exception_handler(Exception)
+async def global_exception_handler(request: Request, exc: Exception):
+    import traceback
+    error_msg = f"Unhandled Error: {type(exc).__name__}: {str(exc)}"
+    print("GLOBAL EXCEPTION LOGGED:\n", traceback.format_exc())
+    response = JSONResponse(
+        status_code=500,
+        content={"detail": error_msg}
+    )
+    origin = request.headers.get("origin")
+    if origin:
+        response.headers["Access-Control-Allow-Origin"] = origin
+        response.headers["Access-Control-Allow-Credentials"] = "true"
+    return response
+
 @app.get("/", tags=["Health"])
 def root():
     return {
