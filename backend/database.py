@@ -19,8 +19,13 @@ SQLALCHEMY_DATABASE_URL = (
     f"mysql+pymysql://{DB_USER}:{encoded_password}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
 )
 
+connect_args = {}
+if DB_HOST != "localhost" and DB_HOST != "127.0.0.1":
+    connect_args = {"ssl": {"ssl_mode": "VERIFY_IDENTITY"}}
+
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL,
+    connect_args=connect_args,
     pool_pre_ping=True,
     pool_size=10,
     max_overflow=20,
