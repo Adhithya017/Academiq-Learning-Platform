@@ -44,25 +44,6 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-@app.middleware("http")
-async def add_cors_headers_fallback(request: Request, call_next):
-    origin = request.headers.get("origin")
-    if request.method == "OPTIONS":
-        from fastapi.responses import Response
-        response = Response(status_code=200)
-        if origin:
-            response.headers["Access-Control-Allow-Origin"] = origin
-            response.headers["Access-Control-Allow-Credentials"] = "true"
-            response.headers["Access-Control-Allow-Methods"] = "GET, POST, PUT, DELETE, OPTIONS, PATCH"
-            response.headers["Access-Control-Allow-Headers"] = "*"
-        return response
-
-    response = await call_next(request)
-    if origin and "Access-Control-Allow-Origin" not in response.headers:
-        response.headers["Access-Control-Allow-Origin"] = origin
-        response.headers["Access-Control-Allow-Credentials"] = "true"
-    return response
-
 # ── Include Routers ───────────────────────────────────────────────────
 app.include_router(auth.router)
 app.include_router(students.router)
